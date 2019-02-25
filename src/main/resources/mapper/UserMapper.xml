@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mybatisxml.demo6.mapper.UserMapper">
+
+    <select id="findAll" resultType="com.mybatisxml.demo6.model.User">
+        select * from emp
+    </select>
+
+    <insert id="insertUser" parameterType="com.mybatisxml.demo6.model.User">
+        insert into userss(name,email,password) values(#{name},#{email},#{password})
+    </insert>
+
+</mapper>
+

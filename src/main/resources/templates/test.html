@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script type="text/javascript" src="/javascript/jquery.min.js"></script>
+</head>
+<body>
+<form onsubmit="return submitTable()">
+
+    账号：<input type="text" id="account"><br>
+
+    姓名：<input type="text" id="name"><br>
+
+    密码：<input type="password" id="password"><br>
+
+    <input name="submit" type="button" id="submit" value="提交" onclick="return submitTable()">
+
+</form>
+
+<hr>
+
+<table border="1" width="50%" align="center" id="table">
+
+    <tr>
+
+        <td id="code">账号</td>
+        <td id="username">姓名</td>
+        <td id="passwords">密码</td>
+
+    </tr>
+
+</table>
+
+<table id="tbl" border="1">
+    <tr><td>编号</td><td>年龄</td><td>单元</td><td>房间号</td></tr>
+    <tr><td>1</td><td>25</td><td>1</td><td>1-2</td></tr>
+    <tr><td>2</td><td>22</td><td>1</td><td>1-1</td></tr>
+    <tr><td>3</td><td>21</td><td>3</td><td>3-3</td></tr>
+    <tr><td>4</td><td>20</td><td>2</td><td>2-2</td></tr>
+    <tr><td>5</td><td>35</td><td>4</td><td>4-2</td></tr>
+
+    <button onclick="tabToJSON()">dainji</button>
+</table>
+<div id="test"></div>
+
+<table style="border:1px" id="tableID">
+    <tr>
+        <th>编号</th>
+        <th>姓名</th>
+        <th>年龄</th>
+        <th>性别</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>张三</td>
+        <td>16</td>
+        <td>男</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>李四</td>
+        <td>18</td>
+        <td>男</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>王五</td>
+        <td>20</td>
+        <td>女</td>
+    </tr>
+</table>
+
+
+</body>
+
+<script type="text/javascript">
+
+    function submitTable(){
+
+        var account = document.getElementById("account").value;
+
+        var name=document.getElementById("name").value;
+
+        var password=document.getElementById("password").value;
+
+        row = document.getElementById("table").insertRow();
+
+        if(row!=null){
+
+            cell=row.insertCell();
+
+            cell.innerHTML=account;
+
+            cell = row.insertCell();
+
+            cell.innerHTML=name;
+
+            cell = row.insertCell();
+
+            cell.innerHTML=password;
+
+        }
+
+        return false;
+
+    }
+
+    function tabToJSON() {
+        console.log("kaishi");
+        var trs = document.getElementById("table").getElementsByTagName("tr");//获得tr数组
+        var titles = trs[0].getElementsByTagName("td");  //获得表头td数组
+        console.log(titles);
+        var json = "";
+        for(var i = 1; i < trs.length; i++) {
+            var tds = trs[i].getElementsByTagName("td");
+            json += "{";
+            //拼装json
+            for(var j = 0; j < tds.length; j++)
+                json += titles[j].innerHTML + ":" + tds[j].innerHTML + ",";
+                json = json.substring(0, json.length - 1) + "},";
+        }
+        json = "[" + json.substring(0, json.length - 1) + "]";
+        console.log(json);
+        document.getElementById("test").innerHTML = json;
+        var datas = JSON.stringify(json);
+        $.ajax({
+            type:"post",
+            async: false,
+            dataType:'json',
+            contentType: "application/json",
+            url:"/GetJson",
+            data: datas,
+            success:function (data) {
+
+            }
+        });
+    }
+
+
+    $(function () {
+        var tabLen = document.getElementById("tableID");
+        var jsonT = "[";
+        for (var i = 1; i < tabLen.rows.length; i++) {
+            jsonT += '{"ID":' + tabLen.rows[i].cells[0].innerHTML + ',"Name":"' + tabLen.rows[i].cells[1].innerHTML + '","Age":' + tabLen.rows[i].cells[2].innerHTML + ',"Gender":"' + tabLen.rows[i].cells[3].innerHTML + '"},'
+        }
+        jsonT= jsonT.substr(0, jsonT.length - 1);
+        jsonT += "]";
+        console.log(jsonT);
+        document.getElementById("test").innerHTML = jsonT;
+        $.ajax({
+            type: 'post',
+            url: '/Home/GetJson',
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(jsonT),
+            success: function (data) {
+
+            }
+        });
+    });
+
+</script>
+
+</html>
